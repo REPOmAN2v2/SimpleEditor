@@ -1,0 +1,9 @@
+#include "../include/resources.h"
+
+IDR_ACCEL1 ACCELERATORS
+{
+	0x4E,	ID_FILE_NEW, VIRTKEY, CONTROL	// ctrl + N
+	0x4F, 	ID_FILE_OPEN, VIRTKEY, CONTROL	// ctrl + O
+	0x51,	ID_FILE_EXIT, VIRTKEY, CONTROL	// ctrl + Q
+	0x53,	ID_FILE_SAVEAS, VIRTKEY, CONTROL// ctrl + S
+}
