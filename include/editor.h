@@ -12,3 +12,4 @@ void saveFile(HWND hwnd);
 BOOL loadText(HWND hEdit, LPCTSTR fileName);
 BOOL writeText(HWND hEdit, LPCTSTR fileName);
 BOOL isKeyDown(int vk);
+void changeFont(HWND hwnd);

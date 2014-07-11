@@ -1,6 +1,11 @@
 #include "../include/resources.h"
 #include "../include/editor.h"
 
+HWND hEdit;
+HDC hdc;
+HFONT hfDefault = NULL;
+COLORREF textColour = RGB(0, 0, 0);
+
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
 	WNDCLASSEX wc;
@@ -73,16 +78,21 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 			{
 				case ID_FILE_EXIT:
 					PostMessage(hwnd, WM_CLOSE, 0, 0);
-				break;
+					break;
 				case ID_FILE_NEW:
 					SetDlgItemText(hwnd, IDC_MAIN_EDIT, "");
-				break;
+					break;
 				case ID_FILE_OPEN:
 					openFile(hwnd);
-				break;
+					break;
 				case ID_FILE_SAVEAS:
 					saveFile(hwnd);
-				break;
+					break;
+				case ID_EDIT_FONT:
+					changeFont(hwnd);
+					//InvalidateRect(hEdit, NULL, TRUE);
+					//UpdateWindow(hEdit);
+					break;
 			}
 			break;
 		default:
@@ -93,9 +103,6 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
 void createEditor(HWND hwnd)
 {
-	HFONT hfDefault;
-	HWND hEdit;
-	HDC hdc;
 	long lfHeight;
 
 	hdc = GetDC(NULL);
@@ -252,4 +259,33 @@ BOOL writeText(HWND hEdit, LPCTSTR fileName)
 BOOL isKeyDown(int vk)
 {
 	return (GetKeyState(vk) & 0x8000);
+}
+
+void changeFont(HWND hwnd)
+{
+	CHOOSEFONT cf;
+	LOGFONT logfont;
+
+	GetObject(hfDefault, sizeof(LOGFONT), &logfont);
+
+	ZeroMemory(&cf, sizeof(cf));
+
+	cf.lStructSize = sizeof(CHOOSEFONT);
+	cf.Flags = CF_EFFECTS | CF_INITTOLOGFONTSTRUCT | CF_SCREENFONTS;
+	cf.hwndOwner = hwnd;
+	cf.lpLogFont = &logfont;
+	cf.rgbColors = textColour;
+
+	if(ChooseFont(&cf)) {
+		HFONT hfont = CreateFontIndirect(&logfont);
+		textColour = cf.rgbColors;
+		SendMessage(hEdit, WM_SETFONT, (WPARAM)hfont, MAKELPARAM(TRUE, 0));
+		DeleteObject(hfDefault);
+
+		if(hfont) {
+			hfDefault = hfont;
+		} else {
+			MessageBox(hwnd, "Failed to create font.", "Error", MB_OK | MB_ICONEXCLAMATION);
+		}
+	}
 }

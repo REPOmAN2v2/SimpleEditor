@@ -6,6 +6,7 @@ SimpleEdit is a very basic file editor for Windows. Coded in C using the WinAPI,
 Keybindings
 ---
 
+  - CTRL + M : change font (colours and effects don't work)
   - CTRL + N : wipe the buffer without saving
   - CTRL + O : open a file
   - CTRL + Q : quit
